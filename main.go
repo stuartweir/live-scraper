@@ -35,11 +35,12 @@ func HomeHandler(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
 
 func AmznIDHandler(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
 	reqID := p.ByName("id")
-	url := "http://www.amazon.com/gp/product/" + reqID
+	url := "http://www.amazon.de/gp/product/" + reqID
 	// Make request to Amazon.com to traverse/parse
 	amznID, err := ExtractInfo(url)
 	if err != nil {
 		fmt.Errorf("Expected %T, got %s", amznID, err)
 	}
-	fmt.Fprintln(w, amznID)
+
+	marshalJSON(w, amznID)
 }

@@ -2,25 +2,28 @@
 package main
 
 import (
-	"fmt"
 	"strconv"
 	"strings"
 
 	"github.com/PuerkitoBio/goquery"
 )
 
-func ExtractInfo(url string) (*Amazon_ID, error) {
-	var amznID *Amazon_ID
+func ExtractInfo(url string) (Amazon_ID, error) {
+	amznID := Amazon_ID{
+		Title:       "",
+		ReleaseYear: 0,
+		Actors:      []string{},
+		Poster:      "",
+		SimilarIDs:  []string{},
+	}
+
 	doc, err := goquery.NewDocument(url)
 	if err != nil {
-		return nil, err
+		return amznID, err
 	}
 
 	amznID.Title = findTitle(doc)
 	amznID.ReleaseYear = findRY(doc)
-	if amznID.ReleaseYear == 0 {
-		return nil, fmt.Errorf("Expected year, got ", 0)
-	}
 	amznID.Actors = findActors(doc)
 	amznID.Poster = findPoster(doc)
 	amznID.SimilarIDs = findSIDs(doc)
@@ -29,7 +32,7 @@ func ExtractInfo(url string) (*Amazon_ID, error) {
 }
 
 func findTitle(doc *goquery.Document) string {
-	return strings.TrimSpace(doc.Find("aiv-content-title").Before("span").Text())
+	return strings.TrimSpace(doc.Find("#aiv-content-title").Before("span").Text())
 }
 
 func findRY(doc *goquery.Document) int {
@@ -41,7 +44,13 @@ func findRY(doc *goquery.Document) int {
 }
 
 func findActors(doc *goquery.Document) []string {
-	return strings.SplitAfter(strings.TrimSpace(doc.Find(".dv-meta-info").Find("dd").First().Text()), ",")
+	actors := strings.SplitAfter(strings.TrimSpace(doc.Find(".dv-meta-info").Find("dd").First().Text()), ",")
+	for i, actor := range actors {
+		actor = strings.TrimSpace(actor)
+		actor = strings.TrimSuffix(actor, ",")
+		actors[i] = actor
+	}
+	return actors
 }
 
 func findPoster(doc *goquery.Document) string {

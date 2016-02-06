@@ -1,15 +1,18 @@
-// 3. handling HTML (traversing, parsing)
 package main
 
 import (
+	"fmt"
 	"strconv"
 	"strings"
 
 	"github.com/PuerkitoBio/goquery"
 )
 
-func ExtractInfo(url string) (Amazon_ID, error) {
-	amznID := Amazon_ID{
+// ExtractInfo receives a URL, downloads the document at that URL,
+// and then populates the AmazonID struct before returning.
+// Note: Dependent on PuerkitoBio's goquery package.
+func ExtractInfo(url string) (AmazonID, error) {
+	amznID := AmazonID{
 		Title:       "",
 		ReleaseYear: 0,
 		Actors:      []string{},
@@ -38,7 +41,8 @@ func findTitle(doc *goquery.Document) string {
 func findRY(doc *goquery.Document) int {
 	i, err := strconv.Atoi(doc.Find(".release-year").Text())
 	if err != nil {
-		return 0
+		// This may look odd, but it simply means that the conversion failed because the release year wasn't available.
+		fmt.Printf("Unable to convert %v to type int. Error: %s", i, err)
 	}
 	return i
 }

@@ -5,7 +5,7 @@ import (
 	"net/http"
 )
 
-func marshalJSON(w http.ResponseWriter, amznID Amazon_ID) {
+func marshalJSON(w http.ResponseWriter, amznID AmazonID) {
 	js, err := json.Marshal(amznID)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)

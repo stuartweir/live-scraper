@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"net/http"
 	"strconv"
 	"strings"
 
@@ -31,7 +32,19 @@ func ExtractInfo(url string) (AmazonID, error) {
 	amznID.Poster = findPoster(doc)
 	amznID.SimilarIDs = findSIDs(doc)
 
+	if err := checkID(amznID); err != nil {
+		return amznID, err
+	}
+
 	return amznID, nil
+}
+
+func checkID(amznID AmazonID) error {
+	if amznID.Title == "" || len(amznID.Actors) == 0 || amznID.Poster == "" {
+		return fmt.Errorf("possible important values missing: title (%s); actors (%s); poster (%s)",
+			amznID.Title, amznID.Actors, amznID.Poster)
+	}
+	return nil
 }
 
 func findTitle(doc *goquery.Document) string {
@@ -41,8 +54,7 @@ func findTitle(doc *goquery.Document) string {
 func findRY(doc *goquery.Document) int {
 	i, err := strconv.Atoi(doc.Find(".release-year").Text())
 	if err != nil {
-		// This may look odd, but it simply means that the conversion failed because the release year wasn't available.
-		fmt.Printf("Unable to convert %v to type int. Error: %s", i, err)
+		fmt.Printf("Bad Request: %v\n", http.StatusBadRequest)
 	}
 	return i
 }

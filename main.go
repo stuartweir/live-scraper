@@ -1,5 +1,3 @@
-// 1. Talk to user (main.go)
-
 // Live Scraper is a service that receives a request for an Amazon ID,
 // Scrapes Amazon's website for information based on that ID, and
 // responds back with a JSON Representation of that Resource, or an error

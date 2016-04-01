@@ -18,7 +18,7 @@ At the current moment, the version of the website (eg: .com, .de) is set manuall
 
 Initially, I wanted to simply use the `golang.org/x/net/html` package to parse the HTML nodes found on the Amazon page. While this was possible to an extent without doing too much work, I found myself trying to figure out how to check CSS selectors for certain pieces of data, which ultimately would have lead me down the path of rewriting a lot of the work found in the `goquery` package by PuerkitoBio on GitHub: [goquery](https://github.com/PuerkitoBio/goquery). It seemed like the most practical approach to solve this problem, and was fairly speedy.
 
-## General Outline of My Thought Process While Designing Live-Scraper:
+## How it Works
 
 1. Request comes in
 2. Parse request
